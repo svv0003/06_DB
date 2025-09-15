@@ -1,131 +1,137 @@
-CREATE DATABASE IF NOT EXISTS chun_university;
+-- 문제 1
+-- chun_university 데이터베이스의 STUDENT 테이블에서 
+-- 모든 학생의 학번(STUDENT_NO), 이름(STUDENT_NAME), 주소(STUDENT_ADDRESS)를 조회하시오.
+SELECT student_no, student_name, student_address
+FROM student;
 
-USE chun_university;
+-- 문제 2
+-- PROFESSOR 테이블의 모든 데이터를 조회하시오.
+SELECT *
+FROM professor;
 
--- 학과 테이블
-CREATE TABLE DEPARTMENT (
-    DEPARTMENT_NO VARCHAR(10) PRIMARY KEY,
-    DEPARTMENT_NAME VARCHAR(255) NOT NULL,
-    CATEGORY VARCHAR(255),
-    OPEN_YN CHAR(1),
-    CAPACITY INT
-);
+-- 문제 3
+-- DEPARTMENT 테이블에서 학과번호(DEPARTMENT_NO)와 학과명(DEPARTMENT_NAME)을 조회하시오.
+SELECT department_no, department_name
+FROM department;
 
--- 학생 테이블
-CREATE TABLE STUDENT (
-    STUDENT_NO VARCHAR(10) PRIMARY KEY,
-    DEPARTMENT_NO VARCHAR(10),
-    STUDENT_NAME VARCHAR(255) NOT NULL,
-    STUDENT_SSN VARCHAR(14),
-    STUDENT_ADDRESS VARCHAR(255),
-    ENTRANCE_DATE DATE,
-    ABSENCE_YN CHAR(1) DEFAULT 'N',
-    COACH_PROFESSOR_NO VARCHAR(10),
-    FOREIGN KEY (DEPARTMENT_NO) REFERENCES DEPARTMENT(DEPARTMENT_NO)
-);
+-- 문제 4
+-- STUDENT 테이블에서 모든 학생의 이름, 입학일, 입학일로부터 현재까지의 일수를 조회하시오.
+-- (컬럼명은 각각 '학생이름', '입학일', '재학일수'로 별칭 지정)
+SELECT student_name "학생이름", entrance_date "입학일", datediff(curdate(), entrance_date) "재학일수"
+FROM student;
 
--- 교수 테이블
-CREATE TABLE PROFESSOR (
-    PROFESSOR_NO VARCHAR(10) PRIMARY KEY,
-    PROFESSOR_NAME VARCHAR(255) NOT NULL,
-    PROFESSOR_SSN VARCHAR(14),
-    PROFESSOR_ADDRESS VARCHAR(255),
-    DEPARTMENT_NO VARCHAR(10),
-    FOREIGN KEY (DEPARTMENT_NO) REFERENCES DEPARTMENT(DEPARTMENT_NO)
-);
+-- 문제 5
+-- 현재 시간과 어제, 내일을 조회하시오.
+-- (컬럼명은 각각 '현재시간', '어제', '내일'로 별칭 지정)
+SELECT NOW() "현재시간", NOW() - Interval 1 Day "어제", NOW() + Interval 1 DAY "내일";
 
--- 과목 테이블
-CREATE TABLE CLASS (
-    CLASS_NO VARCHAR(10) PRIMARY KEY,
-    DEPARTMENT_NO VARCHAR(10),
-    PREATTENDING_CLASS_NO VARCHAR(10),
-    CLASS_NAME VARCHAR(255) NOT NULL,
-    CLASS_TYPE VARCHAR(50),
-    FOREIGN KEY (DEPARTMENT_NO) REFERENCES DEPARTMENT(DEPARTMENT_NO)
-);
 
--- 성적 테이블
-CREATE TABLE GRADE (
-    TERM_NO VARCHAR(10),
-    CLASS_NO VARCHAR(10),
-    STUDENT_NO VARCHAR(10),
-    POINT DECIMAL(3, 2),
-    PRIMARY KEY (TERM_NO, CLASS_NO, STUDENT_NO),
-    FOREIGN KEY (CLASS_NO) REFERENCES CLASS(CLASS_NO),
-    FOREIGN KEY (STUDENT_NO) REFERENCES STUDENT(STUDENT_NO)
-);
+-- 문제 6
+-- STUDENT 테이블에서 학번과 이름을 연결하여 하나의 컬럼으로 조회하시오.
+-- (컬럼명은 '학번_이름'으로 별칭 지정)
+SELECT concat(student_no, student_name)
+FROM student;
 
--- 과목-교수 테이블
-CREATE TABLE CLASS_PROFESSOR (
-    CLASS_NO VARCHAR(10),
-    PROFESSOR_NO VARCHAR(10),
-    PRIMARY KEY (CLASS_NO, PROFESSOR_NO),
-    FOREIGN KEY (CLASS_NO) REFERENCES CLASS(CLASS_NO),
-    FOREIGN KEY (PROFESSOR_NO) REFERENCES PROFESSOR(PROFESSOR_NO)
-);
+-- 문제 7
+-- STUDENT 테이블에서 존재하는 학과번호의 종류만 중복 없이 조회하시오.
+SELECT DISTINCT department_no
+FROM student;
 
--- DEPARTMENT (학과)
-INSERT INTO DEPARTMENT VALUES ('001', '국어국문학과', '인문사회', 'Y', 25);
-INSERT INTO DEPARTMENT VALUES ('002', '영어영문학과', '인문사회', 'Y', 30);
-INSERT INTO DEPARTMENT VALUES ('003', '법학과', '사회과학', 'Y', 40);
-INSERT INTO DEPARTMENT VALUES ('004', '음악학과', '예체능', 'Y', 20);
-INSERT INTO DEPARTMENT VALUES ('005', '환경조경학과', '자연과학', 'Y', 28);
-INSERT INTO DEPARTMENT VALUES ('006', '서반아어학과', '인문사회', 'Y', 22);
+-- 문제 8
+-- GRADE 테이블에서 중복 없이 존재하는 학기번호(TERM_NO) 종류를 조회하시오.
+SELECT DISTINCT term_no
+FROM grade;
 
--- PROFESSOR (교수)
-INSERT INTO PROFESSOR VALUES ('P001', '김교수', '680404-1122334', '서울시 강남구', '001');
-INSERT INTO PROFESSOR VALUES ('P002', '이교수', '720815-1234567', '경기도 수원시', '002');
-INSERT INTO PROFESSOR VALUES ('P003', '박총장', '650320-1987654', '서울시 종로구', NULL);
-INSERT INTO PROFESSOR VALUES ('P004', '최교수', '801130-2456789', '강원도 춘천시', '003');
-INSERT INTO PROFESSOR VALUES ('P005', '정교수', '750505-1357913', '경기도 고양시', '003');
-INSERT INTO PROFESSOR VALUES ('P006', '황보석', '740909-1234567', '서울시 서초구', '006');
+-- 문제 9
+-- STUDENT 테이블에서 휴학여부(ABSENCE_YN)가 'Y'인 학생의 
+-- 학번, 이름, 학과번호를 조회하시오.
+SELECT student_no, student_name, department_no
+FROM student
+WHERE absence_yn = "Y";
 
--- STUDENT (학생)
-INSERT INTO STUDENT VALUES ('A112113', '001', '김고운', '820101-2345678', '서울시 동작구', '2001-03-02', 'N', 'P001');
-INSERT INTO STUDENT VALUES ('A313047', '006', '박수진', '840515-2121212', '경기도 부천시', '2003-03-01', 'N', 'P006');
-INSERT INTO STUDENT VALUES ('A513079', '002', '이은주', '861002-2233445', '전주시 완산구', '2005-03-02', 'N', 'P002');
-INSERT INTO STUDENT VALUES ('A513090', '004', '김음학', '861111-1111111', '서울시 강남구', '2005-03-02', 'N', NULL);
-INSERT INTO STUDENT VALUES ('A513091', '005', '박환경', '861212-2222222', '경기도 안양시', '2005-03-02', 'Y', NULL);
-INSERT INTO STUDENT VALUES ('A513110', '001', '최국문', '860101-1313131', '서울시 영등포구', '2005-03-02', 'N', 'P001');
-INSERT INTO STUDENT VALUES ('A513119', '003', '이법학', '850202-1414141', '경기도 과천시', '2005-03-02', 'N', 'P004');
-INSERT INTO STUDENT VALUES ('A517178', '005', '한아름', '860303-2525252', '강원도 원주시', '2005-03-02', 'N', NULL);
-INSERT INTO STUDENT VALUES ('9912345', '003', '구시대', '800808-1678901', '강원도 강릉시', '1999-03-02', 'N', 'P005');
-INSERT INTO STUDENT VALUES ('A002001', '001', '여학생', '810909-2123456', '전주시 덕진구', '2000-03-02', 'Y', 'P001');
-INSERT INTO STUDENT VALUES ('A212345', '002', '신입생', '020303-3456789', '서울시 중구', '2022-03-02', 'N', 'P002');
-INSERT INTO STUDENT VALUES ('A223456', '002', '김영어', '020404-4567890', '서울시 마포구', '2022-03-02', 'N', 'P002');
-INSERT INTO STUDENT VALUES ('2002123', '001', '전주만', '830303-1234567', '전주시 덕진구', '2002-03-02', 'N', 'P001');
-INSERT INTO STUDENT VALUES ('A313048', '006', '김서반', '840616-1122334', '서울시 강북구', '2003-03-01', 'N', 'P006');
-INSERT INTO STUDENT VALUES ('A414141', '004', '최경희', '850717-2345678', '서울시 성북구', '2004-03-02', 'N', NULL);
 
--- CLASS (과목)
-INSERT INTO CLASS VALUES ('C2123400', '001', NULL, '현대문학', '전공필수');
-INSERT INTO CLASS VALUES ('C3118100', '003', NULL, '형법', '전공선택');
-INSERT INTO CLASS VALUES ('C4455600', '004', NULL, '클래식의이해', '교양');
-INSERT INTO CLASS VALUES ('C5123400', '005', 'C4455600', '도시생태학', '전공필수');
-INSERT INTO CLASS VALUES ('C1234500', '006', NULL, '기초서반아어', '전공필수');
-INSERT INTO CLASS VALUES ('C7891200', '002', NULL, '영미문학개론', '전공선택');
-INSERT INTO CLASS VALUES ('C9876500', '003', NULL, '인간관계론', '교양');
-INSERT INTO CLASS VALUES ('D1234500', '005', NULL, '조경사', '전공선택');
+-- 문제 10
+-- DEPARTMENT 테이블에서 정원(CAPACITY)이 25명 이상인 학과의 
+-- 학과명, 분류, 정원을 조회하시오.
+SELECT department_name, category, capacity
+FROM department
+WHERE capacity > 25;
 
--- GRADE (성적)
-INSERT INTO GRADE VALUES ('200501', 'C2123400', 'A513110', 3.5);
-INSERT INTO GRADE VALUES ('200501', 'C3118100', 'A513119', 4.0);
-INSERT INTO GRADE VALUES ('200402', 'C3118100', 'A513119', 3.0);
-INSERT INTO GRADE VALUES ('200501', 'C4455600', 'A513090', 2.5);
-INSERT INTO GRADE VALUES ('200502', 'C5123400', 'A517178', 4.5);
-INSERT INTO GRADE VALUES ('200502', 'C5123400', 'A513091', 3.8);
-INSERT INTO GRADE VALUES ('200701', 'C9876500', 'A313047', 4.2);
-INSERT INTO GRADE VALUES ('200702', 'C9876500', 'A414141', 3.7);
-INSERT INTO GRADE VALUES ('202201', 'C7891200', 'A212345', 3.9);
-INSERT INTO GRADE VALUES ('200101', 'C2123400', 'A112113', 3.2);
-INSERT INTO GRADE VALUES ('200102', 'C2123400', 'A112113', 4.1);
-INSERT INTO GRADE VALUES ('200201', 'C2123400', 'A112113', 2.8);
-INSERT INTO GRADE VALUES ('200501', 'D1234500', 'A517178', 4.0);
+-- 문제 11
+-- STUDENT 테이블에서 학과번호가 '001'이 아닌 학생의 
+-- 이름, 학과번호, 주소를 조회하시오.
+SELECT student_name, department_no, student_address
+FROM student
+WHERE department_no != 001;
 
--- CLASS_PROFESSOR (과목-교수)
-INSERT INTO CLASS_PROFESSOR VALUES ('C2123400', 'P001');
-INSERT INTO CLASS_PROFESSOR VALUES ('C3118100', 'P004');
-INSERT INTO CLASS_PROFESSOR VALUES ('C4455600', 'P005');
-INSERT INTO CLASS_PROFESSOR VALUES ('C1234500', 'P006');
-INSERT INTO CLASS_PROFESSOR VALUES ('C7891200', 'P002');
-INSERT INTO CLASS_PROFESSOR VALUES ('C9876500', 'P003');
+-- 문제 12
+-- GRADE 테이블에서 성적(POINT)이 4.0 이상인 성적 데이터의 
+-- 학기번호, 과목번호, 학번, 성적을 조회하시오.
+
+SELECT *
+-- SELECT term_no, class_no, student_no, point
+FROM grade
+WHERE point >= 4.0 ;
+
+
+-- 문제 13
+-- STUDENT 테이블에서 2005년에 입학한 학생의 
+-- 학번, 이름, 입학일을 조회하시오.
+SELECT student_no, student_name, entrance_date
+FROM student
+WHERE entrance_date > '2005-01-01';
+
+
+-- 문제 14
+-- PROFESSOR 테이블에서 소속 학과번호(DEPARTMENT_NO)가 NULL이 아닌 교수의 
+-- 교수번호, 이름, 학과번호를 조회하시오.
+SELECT professor_no, professor_name, department_no
+FROM professor
+WHERE department_no IS NOT NULL;
+
+
+-- 문제 15
+-- CLASS 테이블에서 과목유형(CLASS_TYPE)이 '전공필수'인 과목의 
+-- 과목번호, 과목명, 과목유형을 조회하시오.
+SELECT class_no, class_name, class_type
+FROM class
+WHERE class_type = "전공필수";
+
+-- 문제 16
+-- STUDENT 테이블에서 주소가 '서울시'로 시작하는 학생의 
+-- 이름, 주소, 입학일을 조회하시오.
+SELECT student_name, student_address, entrance_date
+FROM student
+WHERE left(student_address, 3) = "서울시" ;
+
+
+-- 문제 17
+-- GRADE 테이블에서 성적이 3.0 이상 4.0 미만인 성적 데이터의 
+-- 학번, 과목번호, 성적을 조회하시오.
+SELECT student_no, class_no, point
+FROM grade
+WHERE point >= 3.0 && point < 4.0;
+
+
+-- 문제 18
+-- STUDENT 테이블에서 지도교수번호(COACH_PROFESSOR_NO)가 'P001'인 학생의 
+-- 학번, 이름, 학과번호를 조회하시오.
+SELECT student_no, student_name, department_no
+FROM student
+WHERE coach_professor_no = 'p001';
+
+
+-- 문제 19
+-- DEPARTMENT 테이블에서 분류(CATEGORY)가 '인문사회'인 학과의 
+-- 학과명, 분류, 개설여부를 조회하시오.
+SELECT department_name, category, open_yn
+FROM department
+WHERE category = "인문사회";
+
+
+-- 문제 20
+-- STUDENT 테이블에서 학번에 'A'가 포함된 학생의 
+-- 학번, 이름, 입학일을 조회하시오.
+SELECT student_no, student_name, entrance_date
+FROM student
+WHERE LEFT(student_no, 1) = 'A';
