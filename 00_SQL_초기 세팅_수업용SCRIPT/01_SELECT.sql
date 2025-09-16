@@ -304,7 +304,8 @@ WHERE emp_code LIKE 'EMP___';
 
 /****************************
 
-AND OR BETWEEN IN ()
+WHERE절
+AND OR BETWEEN IN()
 
 ****************************/
 
