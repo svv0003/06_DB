@@ -335,3 +335,105 @@ SELECT emp_id, full_name, salary
 FROM employees
 WHERE dept_id = 4 AND (salary BETWEEN 40000000 AND 70000000);
 
+-- employees 테이블에서 부서코드 2, 4, 5인 사원의 이름, 부서코드, 급여 조회하기.
+SELECT full_name, dept_id, salary
+FROM employees
+WHERE dept_id = 2 OR dept_id = 4 OR dept_id = 5;
+
+-- 컬럼 값이 ( ) 내 값과 일치하면 TRUE
+SELECT full_name, dept_id, salary
+FROM employees
+WHERE dept_id IN (2, 4, 5);
+
+-- 컬럼 값이 ( ) 내 값과 일치하지 않으면 TRUE
+SELECT full_name, dept_id, salary
+FROM employees
+WHERE dept_id NOT IN (2, 4, 5);
+-- > dept_id가 NULL인 사원들도 제외된 후 조회된다.
+
+-- 컬럼 값이 ( ) 내 값과 일치하면 TRUE
+-- NULL 값을 갖는 사람들을 추가하기.
+SELECT full_name, dept_id, salary
+FROM employees
+WHERE dept_id IN (2, 4, 5) OR dept_id IS NULL;
+
+
+
+/****************************
+
+ORDER BY
+
+SELECT문의 조회 결과 (Result Set)을 정렬시키는 구문.
+SELECT문에서 가장 마지막에 해석된다.
+
+[작성법]
+[3번] SELECT   컬럼명
+[1번] FROM     테이블명
+[2번] WHERE    조건식
+[4번] ORDER BY 컬럼명 | 별칭 | 컬럼 순서 [오름/내림 차순]
+
+기본 정렬은 오름차순.
+ASC  : 오름차순 (Ascending)
+DESC : 내림차순 (Descending)
+
+****************************/
+
+-- employees 테이블에서 모든 사원의 이름, 급여를 조회하고, 급여 기준으로 정렬하기.
+SELECT full_name, salary
+FROM employees
+ORDER BY salary;
+
+SELECT full_name, salary
+FROM employees
+ORDER BY salary ASC;
+
+SELECT full_name, salary
+FROM employees
+ORDER BY salary DESC;
+
+-- employees 테이블에서 급여가 300만원 ~ 600만원인 사람의 사번, 이름, 급여를 이름 순으로 조회하기.
+SELECT emp_id, full_name, salary
+FROM employees
+WHERE salary BETWEEN 40000000 AND 100000000
+ORDER BY full_name DESC;
+
+SELECT emp_id, full_name, salary
+FROM employees
+WHERE salary BETWEEN 40000000 AND 100000000
+ORDER BY 2 DESC;
+-- 2번째 컬럼으로 조회한다. (= full_name)
+
+-- employees 테이블에서 이름, 연봉을 연봉 내림차순으로 조회하기.
+SELECT full_name 이름, salary*12 연봉
+FROM employees
+ORDER BY salary*12 DESC;
+
+SELECT full_name 이름, salary*12 연봉
+FROM employees
+ORDER BY 연봉 DESC;
+
+
+
+/****************************
+
+NULL 값 정렬 처리
+
+기본적으로 NULL 값은 가장 작은 값으로 처리된다.
+ASC   : NULL -> 최상위 존재
+DESC  : NULL -> 최하위 존재
+
+****************************/
+
+-- employees 테이블에서 모든 사원의 이름, 전화번호를 phone 기준으로 오름차순 조회하기.
+SELECT *
+FROM employees
+ORDER BY phone;
+
+-- emplyees 테이블에서 이름, 부서id, 급여를 급여 내림차순 정렬하기.
+SELECT full_name, dept_id, salary
+FROM employees
+ORDER BY salary DESC;
+
+
+
+
