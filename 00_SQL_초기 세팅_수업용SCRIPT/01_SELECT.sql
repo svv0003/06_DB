@@ -136,23 +136,132 @@ SELECT full_name, hire_date, datediff(curdate(), hire_date)
 FROM employees;
 
 
--- 컬럼 명칭 지정하기.
-git init
-git remote add origin https://github.com/svv0003/06_DB.git
-git add .       
-git commit -m "sql setting"
-git push --set-upstream origin main
+/****************************
+
+컬럼명 별칭 지정하기.
+
+1. 컬럼명 AS 별칭		문자 O, 띄어쓰기 X, 특수문자 X
+2. 컬럼명 AS '별칭'	문자 O, 띄어쓰기 O, 특수문자 O
+3. 컬럼명 별칭			문자 O, 띄어쓰기 X, 특수문자 X
+4. 컬럼명 '별칭'		문자 O, 띄어쓰기 O, 특수문자 O
+
+' ' 또는
+" " 또는 ` ` 사용 가능하다.
+대소문자 구분한다.
+
+****************************/
+
+-- 별칭 이용해서 근무일수 계산하기
+SELECT full_name, hire_date, datediff(curdate(), hire_date) AS `근무일수`
+FROM employees;
+
+-- 1. employees 테이블에서 사번, 이름, 이메일 조회하기. (AS 별칭 벡틱 `` 사용 X)
+SELECT emp_code as 사번, full_name as 이름, email as 이메일
+FROM employees;
+/*
+ceil()	: 소수점 아래 지우는 기능
+*/
+-- 2. employees 테이블에서 이름, 급여, 연봉(급여*12) 조회하기. (AS 별칭 벡틱 ``사용 O)
+SELECT full_name AS `이름`, ceil(salary) AS `급여`, ceil(salary*12) AS `연봉`
+FROM employees;
+-- 3. positions 테이블에서 직급, 최소급여, 최대급여, 급여 차이 명칭으로 조회하기. (AS 별칭 벡틱 ``사용 O)
+SELECT position_name AS "직급", ceil(min_salary) AS "최소 급여", ceil(max_salary) AS "최대 급여", ceil(max_salary - min_salary) AS "급여 차이" 
+FROM positions;
+
+
+-- training_programs 테이블에서 프로그램명, 교육시간, 교육일수 (8h) 기준 조회하기.
+SELECT program_name AS `교육프로그램`,
+duration_hours AS "총 교육시간",
+round(duration_hours/8) AS 교육일수
+FROM training_programs;
 
 
 
+/****************************
+
+DISTINCT (별개의, 전혀 다른)
+
+-> 중복 제거
+-> 조회 결과 집합 (RESULT SET)에서
+	지정된 컬럼의 값이 중복인 경우
+	이를 한 번만 표시할 때 사용한다.
+
+****************************/
+
+-- 1. employees 테이블에서 모든 사원의 부서코드 조회하기.
+SELECT *
+FROM employees;
+
+SELECT dept_id
+FROM employees;
+-- 2. employees 테이블에서 사원이 존재하는 부서코드만 조회하기.
+SELECT *
+FROM departments;
+
+
+-- 조회한 결과가 존재하지 않는다.
+-- 조회 결과 : 0이 나온 순간
+-- 에러가 아니다!!!!
+SELECT distinct manager_id
+FROM EMPLOYEES;
+
+
+-- EMPLOYEES 테이블에서 사원 있는 부서 id만 중복 제거 후 조회하기.
+SELECT distinct dept_id
+FROM EMPLOYEES;
+
+
+-- EMPLOYEES 테이블에서 존재하는 position_id 코드의 종류를 중복 없이 조회하기.
+SELECT distinct position_id
+FROM EMPLOYEES;
+
+
+
+/****************************
+
+WHERE 절
+
+테이블에서 조건을 충족하는 행을 조회할 때 사용한다.
+WHERE 절에서는 조건식 (T/F)만 작성한다.
+
+비교 연산자 : >, >=, <, <=, =(같다), != (같지 않다), <> (같지 않다)
+논리 연산자 : AND, OR, NOT
+
+SELECT	컬럼명, 컬럼명 ...
+FROM	DB명칭
+WHERE	조건식;
+
+****************************/
+
+-- employees 테이블에서 급여가 300만원 초과하는 사원의 사번, 이름, 급여, 부서코드 조회하기.
+SELECT emp_id, full_name, salary, dept_id
+FROM employees
+WHERE salary > 3000000;
+/*
+FROM 절에 지정된 테이블에서
+WHERE 절로 행을 먼저 필터링 과정으로 걸러내고,
+SELECT 절에 지정된 컬럼만 조회한다.
 */
 
+-- employees 테이블에서 연봉이 5천만원 이하인 사원의 사번, 이름, 연봉 조회하기.
+SELECT emp_id as 사번, full_name AS 이름, salary*12 AS "연봉"
+FROM employees
+where salary*12 > 50000000;
+
+SELECT *
+FROM employees;
+
+-- employees 테이블에서 부서 코드가 2번이 아닌 사원의 이름, 부서코드, 전화번호 조회하기.
+SELECT full_name AS 이름, dept_id as 부서코드, phone "전화번호"
+FROM employees
+where emp_id != 2;
 
 
+/****************************
 
+연결 연산자 CONCAT()
 
+****************************/
 
-
-
-
-
+SELECT CONCAT(emp_id, full_name) as 사변이름연결
+from employees;

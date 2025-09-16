@@ -1,17 +1,21 @@
 SELECT VERSION();
 
--- 한 줄 주석
-#  한 줄 주석
+
 /*
 여러 줄 주석
-*/
+
+-- 한 줄 주석
+#  한 줄 주석
+
 -- 줄 전체 주석 Ctrl + /
+
+*/
 
 /*
 실행 방법 3가지
 1. 한 줄 실행				Ctrl + Enter
-2. 모든 줄 전체 실행		Ctrl + Shift + Enter
-3. 파일 저장 후 SQL 실행	Ctrl + S -> Ctrl + Shift + Enter
+2. 모든 줄 전체 실행		Ctrl + ALL	-> Ctrl + Shift + Enter
+3. 파일 저장 후 SQL 실행	Ctrl + S	-> Ctrl + Shift + Enter
 */
 
 /*

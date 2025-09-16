@@ -23,13 +23,12 @@ FROM student;
 -- 문제 5
 -- 현재 시간과 어제, 내일을 조회하시오.
 -- (컬럼명은 각각 '현재시간', '어제', '내일'로 별칭 지정)
-SELECT NOW() "현재시간", NOW() - Interval 1 Day "어제", NOW() + Interval 1 DAY "내일";
-
+SELECT CURDATE() - Interval 1 Day "어제", CURDATE() "오늘", CURDATE() + Interval 1 DAY "내일";
 
 -- 문제 6
 -- STUDENT 테이블에서 학번과 이름을 연결하여 하나의 컬럼으로 조회하시오.
 -- (컬럼명은 '학번_이름'으로 별칭 지정)
-SELECT concat(student_no, student_name)
+SELECT concat(student_no, " - ", student_name) AS '학번_이름'
 FROM student;
 
 -- 문제 7
@@ -49,7 +48,6 @@ SELECT student_no, student_name, department_no
 FROM student
 WHERE absence_yn = "Y";
 
-
 -- 문제 10
 -- DEPARTMENT 테이블에서 정원(CAPACITY)이 25명 이상인 학과의 
 -- 학과명, 분류, 정원을 조회하시오.
@@ -62,25 +60,23 @@ WHERE capacity > 25;
 -- 이름, 학과번호, 주소를 조회하시오.
 SELECT student_name, department_no, student_address
 FROM student
-WHERE department_no != 001;
+WHERE department_no != '001';
 
 -- 문제 12
 -- GRADE 테이블에서 성적(POINT)이 4.0 이상인 성적 데이터의 
 -- 학기번호, 과목번호, 학번, 성적을 조회하시오.
-
 SELECT *
 -- SELECT term_no, class_no, student_no, point
 FROM grade
 WHERE point >= 4.0 ;
-
 
 -- 문제 13
 -- STUDENT 테이블에서 2005년에 입학한 학생의 
 -- 학번, 이름, 입학일을 조회하시오.
 SELECT student_no, student_name, entrance_date
 FROM student
-WHERE entrance_date > '2005-01-01';
-
+-- WHERE entrance_date >= '2005-01-01' AND entrance_date < '2006-01-01';
+WHERE entrance_date LIKE '2005%';
 
 -- 문제 14
 -- PROFESSOR 테이블에서 소속 학과번호(DEPARTMENT_NO)가 NULL이 아닌 교수의 
@@ -88,7 +84,6 @@ WHERE entrance_date > '2005-01-01';
 SELECT professor_no, professor_name, department_no
 FROM professor
 WHERE department_no IS NOT NULL;
-
 
 -- 문제 15
 -- CLASS 테이블에서 과목유형(CLASS_TYPE)이 '전공필수'인 과목의 
@@ -102,16 +97,16 @@ WHERE class_type = "전공필수";
 -- 이름, 주소, 입학일을 조회하시오.
 SELECT student_name, student_address, entrance_date
 FROM student
-WHERE left(student_address, 3) = "서울시" ;
-
+-- WHERE left(student_address, 3) = "서울시" ;
+WHERE student_address LIKE "서울시%";
 
 -- 문제 17
 -- GRADE 테이블에서 성적이 3.0 이상 4.0 미만인 성적 데이터의 
 -- 학번, 과목번호, 성적을 조회하시오.
 SELECT student_no, class_no, point
 FROM grade
-WHERE point >= 3.0 && point < 4.0;
-
+-- WHERE point >= 3.0 && point < 4.0;
+WHERE point >= 3.0 AND point < 4.0;
 
 -- 문제 18
 -- STUDENT 테이블에서 지도교수번호(COACH_PROFESSOR_NO)가 'P001'인 학생의 
@@ -120,7 +115,6 @@ SELECT student_no, student_name, department_no
 FROM student
 WHERE coach_professor_no = 'p001';
 
-
 -- 문제 19
 -- DEPARTMENT 테이블에서 분류(CATEGORY)가 '인문사회'인 학과의 
 -- 학과명, 분류, 개설여부를 조회하시오.
@@ -128,10 +122,10 @@ SELECT department_name, category, open_yn
 FROM department
 WHERE category = "인문사회";
 
-
 -- 문제 20
 -- STUDENT 테이블에서 학번에 'A'가 포함된 학생의 
 -- 학번, 이름, 입학일을 조회하시오.
 SELECT student_no, student_name, entrance_date
 FROM student
-WHERE LEFT(student_no, 1) = 'A';
+-- WHERE LEFT(student_no, 1) = 'A';
+WHERE student_no LIKE '%A%';
