@@ -1,7 +1,11 @@
 use chun_university;
 
-SELECT *
-FROM student;
+SELECT * FROM student;
+SELECT * FROM grade;
+SELECT * FROM class;
+SELECT * FROM professor;
+SELECT * FROM department;
+SELECT * FROM class_professor;
 
 -- Q1. 문제: STUDENT 테이블에서 학생 이름의 길이가 3글자인 학생의 학번, 이름을 조회하시오.
 -- 힌트: LENGTH(컬럼명) 함수 사용
@@ -120,84 +124,50 @@ FROM grade;
 -- Q15. 문제: 학과 분류(CATEGORY)별로 정원(CAPACITY)의 합계와 평균을 조회하시오.
 -- 출력: 학과분류, 정원합계, 정원평균 (정원평균 기준 내림차순 정렬)
 -- 힌트: GROUP BY CATEGORY, SUM(), AVG() 사용
-SELECT * FROM student;
-SELECT * FROM grade;
-SELECT * FROM class;
-SELECT * FROM professor;
-SELECT * FROM department;
-
-
-
-SELECT
-    CATEGORY,                    -- 학과 분류 출력
-    SUM(CAPACITY) AS 정원합계,    -- 정원 합계 계산
-    AVG(CAPACITY) AS 정원평균     -- 정원 평균 계산
-FROM DEPARTMENT
-GROUP BY CATEGORY              -- 학과 분류별로 그룹화
-ORDER BY AVG(CAPACITY) DESC;   -- 정원평균 기준 내림차순
-
+SELECT category 학과분류, sum(capacity) 정원합계, avg(capacity) 평균정원
+FROM department
+GROUP BY category
+ORDER BY 평균정원 desc;
 
 
 -- Q16. 문제: 2005년도에 입학한 학생들을 학과별로 그룹화하여 학과번호, 학생수를 조회하시오.
-
 -- 힌트: WHERE YEAR(ENTRANCE_DATE) = 2005, GROUP BY DEPARTMENT_NO
-SELECT
-    DEPARTMENT_NO,      -- 학과번호 출력
-    COUNT(*) AS 학생수   -- 학생 수 계산
-FROM STUDENT
-WHERE YEAR(ENTRANCE_DATE) = 2005  -- 2005년 입학 조건
-GROUP BY DEPARTMENT_NO;           -- 학과번호별로 그룹화
-
+SELECT department_no 학과번호, count(*) 학생수
+FROM student
+WHERE YEAR(ENTRANCE_DATE) = 2005
+GROUP BY 학과번호;
 
 
 -- Q17. 문제: 과목별 평균 성적을 조회하시오.
 -- 출력: 과목번호, 평균성적 (평균성적 기준 내림차순 정렬)
-
 -- 힌트: GROUP BY CLASS_NO, ORDER BY AVG(POINT) DESC
-SELECT
-    CLASS_NO,                   -- 과목번호 출력
-    AVG(POINT) AS 평균성적       -- 평균 성적 계산
-FROM GRADE
-GROUP BY CLASS_NO              -- 과목번호별로 그룹화
-ORDER BY AVG(POINT) DESC;      -- 평균성적 기준 내림차순
-
-
+SELECT class_no 과목번호, avg(point) 평균성적
+FROM grade
+GROUP BY 과목번호
+ORDER BY 평균성적 desc;
 
 
 -- Q18. 문제: 학기별, 과목별 수강 학생 수와 평균 성적을 조회하시오.
 -- 출력: 학기번호, 과목번호, 수강학생수, 평균성적 (학기번호, 평균성적 기준 정렬)
-
 -- 힌트: GROUP BY TERM_NO, CLASS_NO, ORDER BY TERM_NO, AVG(POINT)
-SELECT
-    TERM_NO,                    -- 학기번호 출력
-    CLASS_NO,                   -- 과목번호 출력
-    COUNT(*) AS 수강학생수,      -- 수강 학생 수 계산
-    AVG(POINT) AS 평균성적       -- 평균 성적 계산
-FROM GRADE
-GROUP BY TERM_NO, CLASS_NO     -- 학기별, 과목별 그룹화
-ORDER BY TERM_NO, AVG(POINT); -- 학기번호, 평균성적 순 정렬
-
-
+SELECT term_no 학기번호, class_no 과목번호, count(*) 수강학생수, avg(point) 평균성적
+FROM grade
+GROUP BY 학기번호, 과목번호
+ORDER BY 학기번호, 평균성적;
 
 
 -- Q19. 문제: CLASS_PROFESSOR 테이블에서 전체 교수가 담당하는 서로 다른 과목의 수를 조회하시오.
-
 -- 힌트: COUNT(DISTINCT CLASS_NO) 사용
-SELECT
-    COUNT(DISTINCT CLASS_NO) AS 담당과목수  -- 서로 다른 과목 수 계산
-FROM CLASS_PROFESSOR;
-
+SELECT count(distinct class_no)
+FROM class_professor;
 
 
 -- Q20. 문제: 교수별로 지도하는 학생 수를 조회하시오.
 -- 출력: 교수번호, 지도학생수 (지도학생수 기준 내림차순 정렬)
-
 -- 힌트: WHERE COACH_PROFESSOR_NO IS NOT NULL
 -- GROUP BY COACH_PROFESSOR_NO, ORDER BY COUNT(*) DESC
-SELECT
-    COACH_PROFESSOR_NO AS 교수번호,    -- 교수번호 출력
-    COUNT(*) AS 지도학생수             -- 지도 학생 수 계산
-FROM STUDENT
-WHERE COACH_PROFESSOR_NO IS NOT NULL  -- 지도교수가 있는 학생만
-GROUP BY COACH_PROFESSOR_NO           -- 교수번호별로 그룹화
-ORDER BY COUNT(*) DESC;               -- 지도학생수 기준 내림차순
+SELECT COACH_PROFESSOR_NO 교수번호, count(*) 지도학생수
+FROM student
+WHERE COACH_PROFESSOR_NO IS NOT NULL
+GROUP BY 교수번호
+ORDER BY 지도학생수;
