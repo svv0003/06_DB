@@ -1,3 +1,4 @@
+USE employee_management;
 /*
 SELECT (조회)
 지정된 테이블에서 원하는 데이터를 선택하여 조회하는 SQL
@@ -434,6 +435,100 @@ ORDER BY phone;
 SELECT full_name, dept_id, salary
 FROM employees
 ORDER BY salary DESC;
+
+
+
+
+/****************************
+
+JOIN
+
+INNER JOIN			: 두 테이블에서 조건을 행만 반환한다.
+
+					모든 고객 + 최근 주문 번호
+					주문 내역 + 주문 상품
+                    로그인 사용자 권한 정보
+                    결제 완료 주문 내역
+
+LEFT JOIN			: 왼쪽 테이블의 모든 행을 반환하고, 오른쪽 테이블에 일치하는 행이 있으면 함께 반환한다.
+
+                    모든 고객 + 최근 주문 번호	(주문 없어도 모든 고객 표시)
+					모든 상품 + 리뷰 개수		(리뷰 없어서 모든 상품 표시)
+                    직원 + 교육 이수 현황		(교육 이수 안 받은 직원도 표시)
+
+RIGHT JOIN			: 오른쪽 테이블의 모든 행을 반환하고, 왼쪽 테이블에 일치하는 행이 있으면 함께 반환한다.
+
+					(LEFT JOIN으로도 충분히 사용 가능하기에 RIGHT JOIN은 거의 사용하지 않는다.)
+
+FULL OUTER JOIN		: (MySQL에서 지원하지 않지만 UNION 예약어를 통해 구현 가능하다.)
+		- UNION		: 중복 제거한 후 조회한다. (중복 제거하는 과정 때문에 속도가 약간 느리다.)
+        - UNION ALL	: 중복 포함한 후 조회한다.
+
+SELF JOIN			: 같은 테이블을 자기 자신과 합쳐서 반환한다.
+
+					계층 구조와 같은 테이블 내 관계 조회
+                    게시글 + 댓글 관계
+                    추천인 + 피추천인 관계
+
+CROSS JOIN			: 두 테이블의 모든 행을 합쳐서 반환한다.
+
+					모든 조합을 만들어야 할 때
+                    월별 실적 테이블 초기화
+                    모든 사용자 기본 권한 부여
+
+JOIN
+테이블 간의 기준 컬럼을 통해 하나의 결과로 조회할 때 사용한다.
+JOIN을 이용해서 VIEW 테이블을 생성하고, VIEW 테이블에서 데이터를 읽는 것이 효율적이다!!
+
+****************************/
+
+-- 부서에 속한 직원만 조회하기.
+SELECT * FROM employees;
+SELECT * FROM departments;
+
+-- JOIN 방식
+SELECT employees.dept_id, employees.full_name, departments.dept_name
+FROM employees
+INNER JOIN departments on employees.dept_id = departments.dept_id;
+
+-- 별칭 추가하기.
+SELECT E.dept_id, E.full_name, D.dept_name
+FROM employees E
+INNER JOIN departments D on E.dept_id = D.dept_id;
+
+-- WHERE 방식
+SELECT	E.dept_id, E.full_name, D.dept_name
+FROM employees E, departments D
+WHERE E.dept_id = D.dept_id;
+
+
+
+
+
+/*
+
+다른 스키마를 선택한 상태에서
+또 다른 스키마를 조회하려고 할 때
+USE DB명칭; 사용하지 않고,
+한 번만 조회할 때 작성법
+
+SELECT	컬럼명
+FROM	스키마명칭.테이블명칭;
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
