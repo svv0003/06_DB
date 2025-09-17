@@ -6,7 +6,7 @@ FROM class;
 
 -- 문제 2
 -- GRADE 테이블의 모든 성적 데이터를 조회하시오.
-SELECT point
+SELECT *
 FROM grade;
 
 -- 문제 3
@@ -22,7 +22,7 @@ FROM professor;
 
 -- 문제 5
 -- DEPARTMENT 테이블에서 학과명과 정원을 연결하여 '학과명(정원명)' 형태로 조회하시오.
-SELECT concat(department_name, '(', capacity, ')') "학과명(정원명)"
+SELECT concat(department_name, ' ( ', capacity, '명 )') "학과명(정원명)"
 FROM department;
 
 -- 문제 6

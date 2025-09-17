@@ -53,7 +53,7 @@ WHERE absence_yn = "Y";
 -- 학과명, 분류, 정원을 조회하시오.
 SELECT department_name, category, capacity
 FROM department
-WHERE capacity > 25;
+WHERE capacity > '25';
 
 -- 문제 11
 -- STUDENT 테이블에서 학과번호가 '001'이 아닌 학생의 
@@ -83,6 +83,7 @@ WHERE entrance_date LIKE '2005%';
 -- 교수번호, 이름, 학과번호를 조회하시오.
 SELECT professor_no, professor_name, department_no
 FROM professor
+-- WHERE department_no != NULL;
 WHERE department_no IS NOT NULL;
 
 -- 문제 15
