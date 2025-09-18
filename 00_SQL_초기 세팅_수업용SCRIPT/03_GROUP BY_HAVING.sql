@@ -14,8 +14,6 @@ GROUP BY
 SELECT 절에 명시한 컬럼 중에서 그룹함수가 적용되지 않은 컬럼은
 모두 다 GROUP BY 절에 작성되어야 한다.
 
-
-
 ****************************/
 
 -- employees 테이블에서 부서별 보너스를 받는 사원 수를 조회하기.
@@ -103,6 +101,82 @@ SELECT dept_id '부서', concat(floor(avg(salary)), '원') as '평균 급여'
 FROM employees
 GROUP BY `부서`
 ORDER BY `부서`;
+
+
+
+
+
+
+/****************************
+
+WHERE		: 지정된 테이블에서 조건을 만족하는 행만을 결과로 조회하도록 조건을 지정하는 구문
+			  (태이블 내의 특정 행만 조회하겠다)
+              
+HAVING		: 그룹 함수로 구해오려는 그룹에 대한 조건을 지정하는 구문
+			  그룹에 대한 조건 -> 어떤 그룹만 조회하겠다)
+
+HAVING 컬럼명 | 함수식 비교연산자 비교값
+
+****************************/
+
+USE employee_management;
+SELECT * FROM departments;
+
+
+-- 부서에서 예산 (budget)이 30000000 이상인 부서만 조회하여 부서코드 오름차순으로 정렬하기.
+SELECT dept_code, budget
+FROM departments
+-- WHERE budget > 30000000
+GROUP BY dept_code
+HAVING avg(budget) >= 30000000
+ORDER BY dept_id;
+
+-- 직원이 2명 이상인 부서 조회하기.
+SELECT * FROM employees;
+SELECT dept_id 부서, count(*) 인원수
+FROM employees
+	-- 그룹 함수를 잘못 사용했을 때 나타나는 문제
+	-- WHERE count(*) >= 2;		# Error Code: 1111. Invalid use of group function
+-- dept_id 그룹에서 총 인원이 2명인 부서 아이디만 조회된다.
+GROUP BY dept_id
+HAVING count(*)>=2;
+
+
+/*
+WHERE : 개별 급여가 5천만원 이상인 직원 찾기.
+WHERE salary >= 50000000
+
+HAVING : 그룹의 평균 급여가 5천만원 이상인 부서 찾기.
+HAVING avg(salary) >= 50000000
+
+GROUP BY + HAVING : 집계 함수 (SUM, AVG, MAX, MIN, COUNT 등)
+					특정 그룹의 숫자 데이터를 활용하여 조건별 조회할 때 사용한다.
+*/
+
+-- 평균 급여가 7천만원 이상인 부서 조회하기.
+SELECT dept_id '부서ID', concat(floor(avg(salary)), '원') '평균 급여'
+FROM employees
+GROUP BY dept_id
+HAVING avg(salary) >= 70000000;
+
+
+-- 급여 합계가 1억 5천만원 이상인 부서 조회하기.
+SELECT dept_id '부서ID', concat(floor(sum(salary)), '원') '급여 합계'
+FROM employees
+GROUP BY dept_id
+HAVING sum(salary) >= 150000000;
+
+
+-- 평균 급여가 8천만원 이상인 부서의 이름 조회하기.
+SELECT d.dept_name 부서명 , concat(floor(avg(E.salary)), '원') '평균 급여'
+-- FROM employees E
+-- JOIN departments D
+-- ON E.dept_id = D.dept_id
+FROM employees E, departments D
+WHERE E.dept_id = D.dept_id
+GROUP BY D.dept_name
+HAVING avg(E.salary) >= 80000000;
+
 
 
 
