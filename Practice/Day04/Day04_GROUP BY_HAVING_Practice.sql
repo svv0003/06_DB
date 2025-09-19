@@ -34,6 +34,11 @@ FROM customers;
 SELECT customer_name 고객명, email 이메일, substring(email, locate('@', email)+1) '이메일 도메인'
 FROM customers;
 
+/*
+명칭에 is를 앞에 붙이는 것은 Boolean 값을 의미한다.
+SQL, Java, JavaScript, Python 등 어떤 언어에서든 개발자들이 많이 활용하는 변수명 방식이다.
+*/
+
 -- 문제 6
 -- MENUS 테이블에서 메뉴명에 '치킨'이라는 단어가 포함된 메뉴들을 조회하고, '치킨'을 'Chicken'으로 변경한 결과도 함께 보여주시오.
 SELECT menu_id 메뉴번호, store_id 가게번호, menu_name 메뉴명, replace(description, '치킨', 'chicken') 설명, price 가격
@@ -42,13 +47,20 @@ WHERE locate('치킨', description) > 0;
 
 -- 문제 7
 -- STORES 테이블에서 가게명에 '점'을 'Store'로 바꾸어 조회하시오. (기존명, 변경명)
+-- SELECT store_name 기존명, replace(store_name, '점', 'Store') 변경명
+/*
+regexp_replace()는 정규식을 이용해서 특정 명칭을 변경한다.
+OO$ : OO단어 마지막으로 조회되는 단어(글자?)만 변경한다.
+^OO : OO단어 시작으로 조회되는 단어만 변경한다.
+*/
 SELECT store_name 기존명, regexp_replace(store_name, '점$', 'Store') 변경명
 FROM stores;
 
 -- 문제 8
 -- MENUS 테이블에서 가격을 1000으로 나눈 나머지를 구하여 메뉴명, 가격, 나머지를 조회하시오.
 SELECT menu_name 메뉴명, price 가격, mod(price, 1000) 나머지
-FROM menus;
+FROM menus
+WHERE mod(price, 1000) != 0;
 
 -- 문제 9
 -- ORDERS 테이블에서 총 가격의 절댓값을 구하여 주문번호, 총가격, 절댓값을 조회하시오.
@@ -84,7 +96,7 @@ FROM stores;
 
 -- 문제 15
 -- MENUS 테이블에서 인기메뉴 여부를 숫자로 변환하여 조회하시오. (TRUE=1, FALSE=0)
-SELECT menu_name 메뉴명, replace(is_popular, 1, 'TRUE') 인기메뉴여부
+SELECT menu_name 메뉴명, is_popular 인기메뉴여부
 FROM menus;
 
 -- 문제 16
@@ -205,7 +217,7 @@ HAVING floor(avg(S.delivery_fee)) > 3500;
 SELECT order_status '주문 상태', count(order_id) '주문 건수', sum(total_price) '총 주문금액'
 FROM orders
 GROUP BY `주문 상태`
-HAVING `주문 건수` >= 2;
+HAVING `주문 건` >= 2;
 
 
 
