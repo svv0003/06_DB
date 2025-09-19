@@ -180,6 +180,122 @@ HAVING avg(E.salary) >= 80000000;
 
 
 
+/****************************
+
+수업용 Script 2
+
+stores
+가게번호	가게명	카테고리		평점		배달비
+id		name	category	rating	delivery_fee
+
+menus
+메뉴번호	가게번호		메뉴		설명				가격		주문량
+id		store_id	name	description		price	is_popular
+
+****************************/
+USE delivery_app;
+SELECT * FROM stores;
+SELECT * FROM menus;
+
+-- 각 카테고리별 가게가 몇 개씩 존재하는지 확인하기.
+SELECT category 카테고리, count(*) 가게수
+FROM stores
+GROUP BY category
+ORDER BY 가게수 desc;
+
+-- 각 카테고리별 평균 배달비 구하기.
+SELECT category, AVG(delivery_fee)
+FROM stores
+# 집계 함수는 NULL을 무시하지만 NULL을 제외하는 조건식을 작성해도 가능하다.
+# WHERE delivery_fee IS NOT NULL
+GROUP BY category;
+
+
+
+-- 평점 4.5 이상인 가게만 골라서 카테고리별 개수 구하기.
+SELECT category 카테고리, count(*)
+FROM stores
+WHERE rating >= 4.5
+GROUP BY category;
+
+SELECT category, count(*)
+FROM stores
+GROUP BY category
+HAVING avg(rating) >= 4.5;
+
+-- 배달비가 NULL이 아닌 가게들만 카테고리별 평균 평점 구하기.
+SELECT category 카테고리, round(avg(rating), 2) '평균 평점'
+FROM stores
+WHERE delivery_fee IS NOT NULL
+GROUP BY category;
+
+-- 가게가 3개 이산인 카테고리만 개수 기준 내림차순으로 정렬하기.
+SELECT category 카테고리, count(*) 가게수
+FROM stores
+GROUP BY category
+HAVING count(*) >= 3
+ORDER BY 가게수 desc;
+
+-- 평균 배달비가 3천원 이상인 카테고리 구하기.
+SELECT category 카테고리, floor(avg(delivery_fee)) '평균 배달비'
+FROM stores
+WHERE delivery_fee IS NOT NULL
+GROUP BY category
+HAVING `평균 배달비` >= 3000;
+
+-- 가게별로 메뉴 개수 조회하기.
+SELECT store_id '가게 번호', count(*) '메뉴 개수'
+FROM menus
+GROUP BY `가게 번호`;
+
+-- 가게명, 카테고리 메뉴 개수 조회하기.
+SELECT S.name 가게명, S.category 카테고리, count(*) '메뉴 개수'
+FROM stores S
+JOIN menus M
+ON S.id = M.store_id
+GROUP BY 가게명, 카테고리;
+
+SELECT S.name 가게명, S.category 카테고리, count(*) '메뉴 개수'
+FROM stores S
+JOIN menus M
+ON S.id = M.store_id
+GROUP BY S.id;
+
+
+
+
+
+SELECT count(*) '메뉴 개수'
+FROM stores S, menus M
+WHERE S.id = M.store_id;
+
+SELECT S.name 가게명, S.category 카테고리, count(*) '메뉴 개수'
+FROM stores S, menus M
+WHERE S.id = M.store_id
+GROUP BY S.id;
+
+SELECT S.category 카테고리, count(*) '메뉴 개수'
+FROM stores S, menus M
+WHERE S.id = M.store_id
+GROUP BY S.category;
+
+SELECT S.name 가게명, S.category 카테고리, count(*) '메뉴 개수'
+FROM stores S, menus M
+WHERE S.id = M.store_id
+GROUP BY S.name;
+
+
+
+
+
+SELECT menus.id, menus.store_id, menus.name, menus.description, menus.price, menus.is_popular
+FROM menus, stores
+WHERE menus.store_id = stores.id;
+
+
+
+
+
 
 
 

@@ -193,6 +193,43 @@ FROM employees
 WHERE gender = 'm';
 
 
+-- ^ 문자열 시작
+SELECT regexp_replace('Hello World', '^World', 'HI');	# Hello World
+
+SELECT regexp_replace('Hello World', '^Hello', 'HI');	# HI World
+SELECT regexp_replace('Hello World', '^Hell', 'HI');	# HIo World
+
+SELECT regexp_replace('Hello Hello', '^Hello', 'HI');	# HI Hello
+
+-- $ 문자열 끝
+SELECT regexp_replace('Hello World', 'Hello$', 'HI');	# Hello World
+
+SELECT regexp_replace('Hello World', 'World$', 'HI');	# Hello HI
+SELECT regexp_replace('Hello World', 'rld$', 'HI');		# Hello WoHI
+
+SELECT regexp_replace('Hello Hello', 'Hello$', 'HI');	# Hello HI
+
+
+SELECT concat('Hello', 'World', '!');				# HelloWorld!
+
+SELECT concat_ws('-', 'Hello', 'World', '!');		# Hello-World-!
+
+SELECT upper('hello');		# HELLO
+
+SELECT lower('WORLD');		# world
+
+
+SELECT trim('   ABC   ');				# .ABC.
+SELECT ltrim('   ABC   ');				# ABC   .
+SELECT rtrim('   ABC   ');				# .   ABC
+
+SELECT trim('x' FROM 'xxxABCxxx');		# .ABC.
+SELECT trim('xx' FROM 'xxxABCxxx');		# .xABCx.
+SELECT trim('x' FROM 'xxxAxBxCxxx');	# .AxBxC.
+
+
+
+
 
 
 

@@ -289,7 +289,6 @@ FROM stores s
 INNER JOIN (SELECT category, max(rating) '최대평점' FROM stores GROUP BY category) J
 ON s.category = J.category AND s.rating = J.최대평점;
 
-SELECT *
 
 
 
