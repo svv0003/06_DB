@@ -236,6 +236,7 @@ EXISTS / NOT EXISTS
 
 /****************************
 IN 연산자 : 가장 많이 사용되는 다중행 서브쿼리
+- 포함할 때 사용한다.
 ****************************/
 
 -- 인기 메뉴가 있는 매장 조회하기.
@@ -254,9 +255,33 @@ JOIN menus m ON s.id = m.store_id
 WHERE s.id IN (SELECT distinct store_id FROM menus WHERE is_popular = TRUE);
 
 
+-- 치킨, 피자 카테고리 매장들만 조회하기.
+-- 1단계 : 치킨 피자 카테고리 중복없이 조회하기.
+SELECT distinct name, category, rating
+FROM stores
+WHERE category IN ('치킨','피자');
+-- 2단계 : WHERE category = '치킨' OR category = '피자'
+SELECT distinct name, category, rating
+FROM stores
+WHERE category = '치킨' OR category = '피자';
+
+
+-- 2만원 이상인 메뉴를 파는 매장들 조회하기.
+-- 1단계 : 메뉴가 2만원 이상인 매장 조회하기.
+SELECT distinct store_id
+FROM menus
+WHERE price > 20000;
+-- 2단계 : 해당 매장들에 대한 정보 가져오기
+SELECT name, category, rating
+FROM stores
+WHERE id IN (SELECT distinct store_id FROM menus WHERE price > 20000)
+ORDER BY name;
+
+
 
 /****************************
 NOT IN 연산자
+- 제외할 때 사용한다.
 ****************************/
 
 -- 인기메뉴가 없는 매장 조회하기.
@@ -289,7 +314,11 @@ FROM stores s
 INNER JOIN (SELECT category, max(rating) '최대평점' FROM stores GROUP BY category) J
 ON s.category = J.category AND s.rating = J.최대평점;
 
-
+SELECT *
+FROM stores
+WHERE RATING in (SELECT max(rating)
+FROM stores
+GROUP BY category);
 
 
 -- 문제 2: 배달비가 가장 저렴한 매장들의 인기 메뉴들 조회
@@ -301,6 +330,10 @@ SELECT *
 FROM menus
 WHERE is_popular = TRUE
 AND store_id IN (SELECT id FROM stores WHERE delivery_fee = (SELECT min(delivery_fee) FROM stores));
+/*
+WHERE 절에는 MIN() MAX() AVG() 등의 함수를 직접적으로 사용 불가능하다.
+WHERE 절은 테이블의 각 행을 하나씩 필터링하는 단계이다.
+*/
 
 
 -- 문제 3: 평점이 가장 높은 매장들의 모든 메뉴들 조회
@@ -372,43 +405,32 @@ WHERE id = (SELECT distinct store_id FROM menus WHERE price = (SELECT max(price)
 
 /****************************
 ANY 연산자
-IS NULL / IS NOT NULL
+- 하나라도 조건을 만족하면 TRUE
 ****************************/
 
--- 치킨, 피자 카테고리 매장들만 조회하기.
--- 1단계 : 치킨 피자 카테고리 중복없이 조회하기.
-SELECT distinct name, category, rating
-FROM stores
-WHERE category IN ('치킨','피자');
--- 2단계 : WHERE category = '치킨' OR category = '피자'
-SELECT distinct name, category, rating
-FROM stores
-WHERE category = '치킨' OR category = '피자';
-
-
--- 2만원 이상인 메뉴를 파는 매장들 조회하기.
--- 1단계 : 메뉴가 2만원 이상인 매장 조회하기.
-SELECT distinct store_id
-FROM menus
-WHERE price > 20000;
--- 2단계 : 해당 매장들에 대한 정보 가져오기
-SELECT name, category, rating
-FROM stores
-WHERE id IN (SELECT distinct store_id FROM menus WHERE price > 20000)
-ORDER BY name;
-
+-- 치킨집 중에서 배달비가 저렴한 매장들 확인하기.
+-- 1단계 : 치킨집들의 배달비 확인하기.
+SELECT name, delivery_fee FROM stores WHERE category = '치킨' AND delivery_fee IS NOT NULL ORDER BY delivery_fee;
 
 
 /****************************
 ALL 연산자
+- 모든 조건을 만족해야 TRUE
 ****************************/
 
 
 
+/****************************
+EXISTS 연산자
+- 모든 조건을 만족해야 TRUE
+****************************/
 
 
 
-
+/****************************
+NOT EXISTS 연산자
+- 모든 조건을 만족해야 TRUE
+****************************/
 
 
 
