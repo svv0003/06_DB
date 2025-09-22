@@ -411,6 +411,59 @@ ANY 연산자
 -- 치킨집 중에서 배달비가 저렴한 매장들 확인하기.
 -- 1단계 : 치킨집들의 배달비 확인하기.
 SELECT name, delivery_fee FROM stores WHERE category = '치킨' AND delivery_fee IS NOT NULL ORDER BY delivery_fee;
+-- 2단계 : 특정 값 (3000원)보다 작은 매장 찾기.
+SELECT * FROM stores WHERE delivery_fee <= 3000 AND delivery_fee IS NOT NULL;
+-- 3단계 : ANY로 조합하여 치킨 카테고리에서 배달비가 3천원이하인 가게들의 이름과 카테고리, 배달비 조회하기.
+SELECT name, category, delivery_fee
+FROM stores
+WHERE delivery_fee < ANY(
+				SELECT delivery_fee
+                FROM stores
+                WHERE category = '치킨'
+                AND delivery_fee IS NOT NULL ORDER BY delivery_fee)
+AND delivery_fee IS NOT NULL
+ORDER BY delivery_fee;
+
+
+-- 한식집들 중 어떤 매장보다 평점이 높은 매장 찾기.
+-- 1단계 : 한식집 평점 확인하기.
+SELECT rating
+FROM stores
+WHERE category = '한식';
+-- 2단계 : 한식집 중 어느 매장보다든 높은 평점 매장 찾기.
+SELECT *
+FROM stores
+WHERE rating > 4.2
+AND rating IS NOT NULL;
+-- 3단계 : ANY 작성하기.
+SELECT *
+FROM stores
+WHERE rating > ANY (SELECT rating
+					FROM stores
+					WHERE category = '한식'
+                    AND rating IS NOT NULL)
+AND rating IS NOT NULL
+AND category NOT IN('한식');			-- 한식 제외한 카테고리 조회 추가하기.
+
+-- 일식집들 기준으로 배달비가 저렴한 매장 찾기.
+-- 1단계 : 일식집 배달비 확인하기.
+SELECT delivery_fee
+FROM stores
+WHERE category IN ('일식');
+-- 2단계 : 일식집 중 어느 매장보다든 저렴한 매장 찾기.
+SELECT *
+FROM stores
+WHERE delivery_fee < 4000
+AND delivery_fee IS NOT NULL;
+-- 3단계 : ANY 작성하기.
+SELECT *
+FROM stores
+WHERE delivery_fee < ANY (SELECT delivery_fee
+							FROM stores
+							WHERE category IN ('일식'))
+AND delivery_fee IS NOT NULL
+AND category NOT IN ('일식');
+
 
 
 /****************************
@@ -418,14 +471,99 @@ ALL 연산자
 - 모든 조건을 만족해야 TRUE
 ****************************/
 
+-- 치킨집보다 배달비가 저렴한 매장 찾기.
+-- 1단계 : 치킨집 배달비 확인하기.
+SELECT min(delivery_fee)
+FROM stores
+WHERE category IN ('치킨');
+-- 2단계 : 모든 치킨집 배달비 중 가장 낮은 치킨집을 기준으로 저렴한 매장 찾기.
+SELECT *
+FROM stores
+WHERE delivery_fee < 2000
+AND delivery_fee IS NOT NULL
+AND category != '치킨';
+-- 3단계 : ALL 작성하기.
+SELECT *
+FROM stores
+WHERE delivery_fee < ALL (SELECT delivery_fee
+							FROM stores
+							WHERE category IN ('치킨'))
+AND delivery_fee IS NOT NULL
+AND category != '치킨';
+# Java에서는 DB에서 전달받은 데이터가 0개일 것이고, HTML로 0개를 전달한다.
+# HTML에서는 조회된 결과가 없다는 것을 표시한다.
+# DB OUTPUT 화면에 X가 표시되지 않고, 결과가 없다면 단순히 조회 결과가 없다는 것이다.
+
 
 
 /****************************
 EXISTS 연산자
 - 모든 조건을 만족해야 TRUE
+
+-- EXISTS = T/F만 본다.
+-- 			존재 유무를 단순히 확인하기 때문에 1과 같은 숫자 값으로 빠르게 가져오도록 설정한다.
+-- 존재하면 1이라는 숫자가 몇 개 뜨는지만 조회할 때 주로 사용한다.
+-- 컬럼 내부 값은 중요하지 않고, 단순히 존재 유뮤를 확인할 때 사용하는 단순 숫자 표기
+-- 숫자 값은 개발자가 넣고 싶은 숫자 값을 맘대로 넣어도 되지만 보통 존재할 때는 1, 존재하지 않을 때는 0을 작성한다.
+
+EXISTS 사용 방법
+
+WHERE EXISTS ( 	SELECT 	1
+				FROM 	테이블명
+                WHERE	별칭.외래키 = 현재테이블별칭.기본키 ) ;
+                
 ****************************/
 
+-- 메뉴가 존재하는 매장들 찾기.
+-- 1단계 : 각 매장별로 메뉴가 있는지 확인하기.
+-- 		  예를 들어 store_id가 1인 매장 메뉴 확인하기.
+-- store_id = 1인 데이터를 조회할 때의 모든 컬럼의 결과를 가져온다.
+SELECT *
+FROM menus
+WHERE store_id = 1;
+-- SELECT 1은 내부 컬럼 데이터가 아닌 데이터가 존재하는지 확인한다.
+-- TRUE = 1
+-- FALSE = 0
+-- 존재하면 1이라는 숫자가 몇 개 뜨는지만 조회할 때 주로 사용한다.
+-- 컬럼 내부 값은 중요하지 않고, 단순히 존재 유뮤를 확인할 때 사용하는 단순 숫자 표기
+-- 숫자 값은 개발자가 넣고 싶은 숫자 값을 맘대로 넣어도 되지만 보통 존재할 때는 1, 존재하지 않을 때는 0을 작성한다.
+SELECT 1
+FROM menus
+WHERE store_id = 1;
 
+SELECT name, category
+FROM stores S
+WHERE exists (SELECT 1
+				FROM menus M
+				WHERE M.store_id = S.id);	# menus store_id가 stores id가 같이 존재할 경우에만 출력한다.
+											# 모든 가게가 모든 메뉴를 갖고 있기 때문에 모두 조회되지만
+                                            # 배민에서 가게를 오픈하기만 하고, 메뉴가 존재하지 않는 매장은 조회되지 않는다.
+                                            
+                                            
+-- 설명이 있는 메뉴를 파는 매장 찾기.
+-- 1단계 : 설명이 있는 메뉴를 가진 매장 ID 찾기.
+SELECT distinct store_id
+FROM menus
+WHERE description IS NOT NULL;
+-- 2단계 : EXISTS 활용하여 조합하기.
+-- EXISTS = T/F만 본다.
+-- 			존재 유무를 단순히 확인하기 때문에 1과 같은 숫자 값으로 빠르게 가져오도록 설정한다.
+-- store_id 연결 조건이 없기 때문에 단순히 
+SELECT *
+FROM stores
+WHERE exists (SELECT distinct store_id
+				FROM menus
+				WHERE description IS NOT NULL);	# 설명이 없는 메뉴도 있는 매장 조회된다.
+                
+-- 매장 중에서 메뉴 설명이 존재하는 데이터만 조회하기.
+-- s.id = m.store_id 메뉴와 가게가 서로 연결된 데이터만 조회하도록 설정한다.
+SELECT *
+FROM stores S
+WHERE exists (SELECT distinct store_id
+				FROM menus M
+				WHERE s.id = m.store_id
+                AND description IS NOT NULL);
+                
 
 /****************************
 NOT EXISTS 연산자
