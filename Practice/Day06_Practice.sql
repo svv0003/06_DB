@@ -112,6 +112,15 @@ SELECT * FROM stores;
 UPDATE stores
 SET opening_hours = '매일 24시간'
 WHERE category_id = 2;
+-- subquery로 작성하기.
+SELECT * FROM categories WHERE category_name = 'Chicken';
+UPDATE stores
+SET opening_hours = '매일 24시간'
+WHERE category_id = (SELECT category_id FROM categories WHERE category_name = 'Chicken');
+-- 매일 12시간 과 Chicken 은 html에서 소비자가 변경하고자하여 선택하거나 작성한 데이터를 javascript 변수이름을 통해서
+-- java 서버로 전달되고, java 에서는 javascript 로 전달받은 데이터를 java 내부에 설정한 변수이름으로 전달 받은 다음에
+-- sql 로 전달받은 데이터를 수정 변경하겠다 요청
+
 
 -- 문제 16
 -- 새로운 주문을 ORDERS 테이블에 추가하시오.
@@ -142,7 +151,7 @@ insert into orders
 		values (null, 14, 7, now(), 'Pending', '13200', '경기도 성남시 분당구 판교로 500', null);
 insert into order_items
 		values (null, 11, 14, 2, 13200);
-        
+
 -- 문제 19
 -- '동대문엽기떡볶이 신림점' 매장의 모든 메뉴 가격을 10% 인상하시오. (가격 × 1.1로 계산)
 SELECT * FROM menus;
@@ -150,6 +159,14 @@ SELECT * FROM stores;
 update menus
 set price = price * 1.1
 WHERE store_id = 6;
+-- 다시 가격 복구하기.
+update menus
+set price = price * 10 / 11
+WHERE menu_id IN (12, 14);
+-- subquery로 작성하기.
+update menus
+set price = price * 1.1
+WHERE store_id = (SELECT store_id FROM stores WHERE store_name = '동대문엽기떡볶이 신림점');
 
 -- 문제 20
 -- 전화번호가 등록되지 않은(NULL) 모든 고객의 전화번호를 '미등록'으로 변경하시오.

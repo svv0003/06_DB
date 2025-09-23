@@ -365,3 +365,102 @@ SET SQL_SAFE_UPDATES = 1;
 
 
 
+/*******************
+
+DELETE
+
+테이블의 행을 삭제하는 구문
+
+작성법
+
+DELETE FROM 테이블명 WHERE 조건식;
+(만약 WHERE 조건 설정하지 않으면 모든 행이 삭제된다.)
+
+
+******************/
+
+-- DELETE 작업 전 개발자가 잠시 수행하는 작업 중 하나
+-- 가볍게 저용량 테이블을 삭제할 경우 많이 사용한다.
+
+
+
+USE delivery_app;
+-- 테스트용 테이블 생성하자. (기존 stores 테이블 복사하기.)
+CREATE TABLE stores_copy AS SELECT * FROM stores;
+-- 테스트용 테이블 조회하자.
+SELECT * FROM stores_copy;
+-- 테스트용 테이블 삭제하자.
+DROP TABLE stores_copy;
+
+
+INSERT INTO stores_copy
+		-- VALUES (NULL, '박말숙치킨', '치킨', '서울시 강남구 99', '02-1234-1234', 4.8, 3000);
+		VALUES (default, '박말숙치킨', '치킨', '서울시 강남구 99', '02-1234-1234', 4.8, 3000);
+-- AUTO INCREMENT는 NULL 작성 가능해야 하는데 DEFAULT 작성하니까 가능하다네?
+-- member 테이블은 null이 되고, stores_copy는 null 안 되네?
+-- > member 테이블은 개발자가 CREATE TABLE로 직접 모두 작성해서 만든 SQL 테이블.
+-- > stores_copy 테이블은 기존 테이블을 가볍게 복제한 상태.
+-- -- > AUTO INCREMENT 같은 상세한 컬럼 설정은 복제 안 된다.
+-- -- > 별도로 설정 추가해야 한다.
+
+
+-- 속성까지 모두 복제하는 방식.
+CREATE TABLE stores_copy_2 LIKE stores;
+INSERT INTO stores_copy_2 SELECT * FROM stores;
+
+INSERT INTO stores_copy_2
+		VALUES (NULL, '박말숙치킨', '치킨', '서울시 강남구 99', '02-1234-1234', 4.8, 3000);
+-- 이젠 null 작성 가능하다.
+SELECT * FROM stores_copy_2;
+
+
+-- SQL에서 아무런 설정이 되어있지 않는 상태.
+SELECT @sql_mode;
+
+
+
+
+
+-- stores_copy_2
+SELECT * FROM stores_copy_2 WHERE delivery_fee >= 4000;
+-- 배달비가 4000 원 이상인 가게들 삭제
+DELETE 
+FROM stores_copy_2
+WHERE delivery_fee >= 4000
+OR delivery_fee IS NULL;
+
+-- stores_copy_2 에서 배달비가 4000원 이상인 가게들 모두 삭제
+DELETE
+FROM stores_copy_2
+WHERE delivery_fee >= 4000;
+
+-- stores_copy_2 에서 평점이 4.5 미만이고 카테고리가 치킨인 매장 모두 삭제
+DELETE
+FROM stores_copy_2
+WHERE rating < 4.5
+AND category = '치킨';
+
+-- stores_copy_2 에서 전화번호가 NULL 인 매장 삭제
+DELETE 
+FROM stores_copy_2
+WHERE phone IS NULL;
+
+-- stores_copy TABLE 자체 모두 삭제
+DROP TABLE stores_copy_2;
+
+
+
+CREATE TABLE stores_dev_test LIKE stores;
+INSERT INTO stores_dev_test SELECT * FROM stores;
+SELECT * FROM stores_dev_test;
+
+-- 매장 번호가 1,2,3인 매장 삭제하기.
+DELETE FROM stores_dev_test WHERE id IN (1,2,3);
+-- 이름에 치킨 들어가는 매장 삭제하기.
+DELETE FROM stores_dev_test WHERE name LIKE '%치킨%';
+
+DROP TABLE stores_dev_test;
+
+
+
+
