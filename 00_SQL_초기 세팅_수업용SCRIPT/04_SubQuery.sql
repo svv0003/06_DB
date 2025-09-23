@@ -531,13 +531,15 @@ SELECT 1
 FROM menus
 WHERE store_id = 1;
 
-SELECT name, category
+SELECT * FROM stores;
+
+SELECT store_name, category_id
 FROM stores S
 WHERE exists (SELECT 1
 				FROM menus M
-				WHERE M.store_id = S.id);	# menus store_id가 stores id가 같이 존재할 경우에만 출력한다.
-											# 모든 가게가 모든 메뉴를 갖고 있기 때문에 모두 조회되지만
-                                            # 배민에서 가게를 오픈하기만 하고, 메뉴가 존재하지 않는 매장은 조회되지 않는다.
+				WHERE M.store_id = S.store_id);	# menus store_id가 stores id가 같이 존재할 경우에만 출력한다.
+												# 모든 가게가 모든 메뉴를 갖고 있기 때문에 모두 조회되지만
+												# 배민에서 가게를 오픈하기만 하고, 메뉴가 존재하지 않는 매장은 조회되지 않는다.
                                             
                                             
 -- 설명이 있는 메뉴를 파는 매장 찾기.
