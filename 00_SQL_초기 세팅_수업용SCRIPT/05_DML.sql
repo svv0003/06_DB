@@ -313,6 +313,10 @@ UPDATE 테이블명
 -- 무사히 변경된다면
 -- 1 row(s) affected Rows matched: 1  Changed: 1  Warnings: 0	0.0047 sec
 
+SELECT * FROM member;
+UPDATE member
+SET address = null
+WHERE member_id = 3;
 
 UPDATE member
 SET phone = '010-1111-9999',
@@ -322,7 +326,6 @@ WHERE username = 'hong1234';
 -- 존재하지 않은 username을 조건으로 작성해도 에러 발생하지 않는다.
 -- 왜? -> 못 찾은 상태 그대로 변경된 데이터가 0으로 조회된다.
 -- 0 row(s) affected Rows matched: 0  Changed: 0  Warnings: 0	0.00083 sec
-
 UPDATE member
 SET phone = '010-1111-9999'
 WHERE username = 'hong1234567890';
@@ -455,11 +458,62 @@ INSERT INTO stores_dev_test SELECT * FROM stores;
 SELECT * FROM stores_dev_test;
 
 -- 매장 번호가 1,2,3인 매장 삭제하기.
-DELETE FROM stores_dev_test WHERE id IN (1,2,3);
+DELETE
+FROM stores_dev_test
+WHERE id IN (1,2,3);
 -- 이름에 치킨 들어가는 매장 삭제하기.
 DELETE FROM stores_dev_test WHERE name LIKE '%치킨%';
 
 DROP TABLE stores_dev_test;
+
+
+
+
+CREATE TABLE stores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    phone VARCHAR(20),
+    rating DECIMAL(2, 1),
+    delivery_fee INT
+);
+
+CREATE TABLE stores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    phone VARCHAR(20),
+    rating DECIMAL(2, 1),
+    delivery_fee INT
+);
+
+CREATE TABLE stores_copy (
+    id INT,
+    name VARCHAR(100),
+    category VARCHAR(50),
+    address VARCHAR(255),
+    phone VARCHAR(20),
+    rating DECIMAL(2, 1),
+    delivery_fee INT
+);
+
+CREATE TABLE stores_copy_2 (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    phone VARCHAR(20),
+    rating DECIMAL(2, 1),
+    delivery_fee INT
+);
+
+
+
+
+
+
 
 
 
