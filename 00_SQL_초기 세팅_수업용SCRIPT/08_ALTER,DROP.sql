@@ -155,12 +155,59 @@ ALTER TABLE department ADD create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 -- 기존 컬럼을 삭제할 때는 DROP COLUMN 예약어를 사용한다.
 -- 컬럼명을 수정할 때는 RENAME COLUMN + TO 예약어를 사용한다.
 
+-- ADD, DROP만 사용해도 컬럼 수정 가능하지만 MySQL만 예외적인 것이다.
+-- > 다른 SQL은 COLUMN을 필수로 작성해야 한다.
 
 -- department 테이블에서 create_date 컬럼 삭제하기.
 ALTER TABLE department DROP create_date;
 
 -- 특정 컬럼명 변경하기.
 ALTER TABLE department RENAME COLUMN dept_title TO dept_name;
+
+
+
+-- 테이블 삭제
+-- 다수의 SQL : DROP TABLE 테이블명 [CASECADE CONSTRAINTS] ;
+-- MySQL    : DROP TABLE 테이블명 ;
+--            외래키 활성화/비활성화 후 부모테이블 삭제 여부 결정된다.
+
+DROP TABLE BOOK;
+-- Error Code: 3730.
+-- ORDER_DETAIL 테이블에서 외래키를 통해 참조되고 있기 때문에 삭제 불가능하다.
+
+-- 방법 세 가지
+-- 자식 -> 부모 순서대로 삭제하거나
+-- 외래키 제약 조건만 삭제하거나
+-- 외래키 체크 임시 비활성화를 통해 삭제한다.
+
+-- 방법 1번
+DROP TABLE order_detail;
+DROP TABLE book;
+
+-- practice_db에 존재하는 테이블 삭제하기
+-- customer, department, employee, product 삭제하기.
+USE practice_db;
+DROP TABLE customer;
+DROP TABLE department;
+DROP TABLE employee;
+DROP TABLE product;
+DROP DATABASE practice_db;
+
+-- bookstore ~ 스노우까지 모두 삭제하기.
+DROP DATABASE bookstore;
+DROP DATABASE chun_university;
+DROP DATABASE delivery_app;
+DROP DATABASE delivery_db;
+DROP DATABASE 네이버;
+DROP DATABASE 라인;
+DROP DATABASE 스노우;
+DROP DATABASE employee_management;
+
+
+
+
+
+
 
 
 
