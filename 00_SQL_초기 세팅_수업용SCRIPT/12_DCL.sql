@@ -47,13 +47,13 @@ GRANT SELECT ON tje.employees TO 'guest'@'localhost';
 
 -- office_user SELECT, INSERT, UPDATE 권한을 동시에 부여한다.
 -- 조회, 수정, 저장 가능하지만 삭제 불가능한 유저이다.
-GRANT SELECT ON tje.employees TO 'office_user'@'192.168.1.100';
+GRANT SELECT, INSERT, UPDATE ON tje.employees TO 'office_user'@'192.168.1.100';
 
 
 -- network_user에게 SELECT, INSERT, UPDATE 권한을 동시에 부여한다.
 -- tje 데이터 베이스에서 모든 테이블에 접근 권한이 있는 유저이다.
 -- 조회, 수정, 저장 가능하지만 삭제 불가능한 유저이다.
-GRANT SELECT ON tje.* TO 'network_user'@'192.168.1.%';
+GRANT SELECT, INSERT, UPDATE ON tje.* TO 'network_user'@'192.168.1.%';
 
 
 -- remote_user에게 모든 권한을 부여한다.
@@ -65,7 +65,6 @@ GRANT ALL privileges ON *.* TO 'remote_user'@'%';
 -- 모든 권한을 부여한 후 권한 적용을 안 하면 부여한 권한이 의미 없어진다.
 
 
-
 -- 권환 회수
 REVOKE SELECT ON tje.employees FROM 'guest'@'localhost';
 REVOKE SELECT ON tje.employees FROM 'office_user'@'192.168.1.100';
@@ -73,7 +72,7 @@ REVOKE SELECT ON tje.* FROM 'network_user'@'192.168.1.%';
 REVOKE SELECT ON *.* FROM 'remote_user'@'%';
 
 
-
+SHOW GRANTS FOR 'network_user'@'192.168.1.%';
 
 
 

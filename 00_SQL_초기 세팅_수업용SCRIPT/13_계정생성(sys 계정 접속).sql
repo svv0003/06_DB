@@ -57,12 +57,17 @@ CREATE USER 'guest'@'localhost';
 
 ********************/
 
-
 CREATE USER 'john'@'localhost' IDENTIFIED BY 'mypassword123';
 CREATE USER 'remote_user'@'%' IDENTIFIED BY 'remotepass456';
 CREATE USER 'office_user'@'192.168.1.100' IDENTIFIED BY 'officepass';
 CREATE USER 'network_user'@'192.168.1.%' IDENTIFIED BY 'networkpass';
 CREATE USER 'guest'@'localhost';
+
+
+
+
+
+
 
 
 
