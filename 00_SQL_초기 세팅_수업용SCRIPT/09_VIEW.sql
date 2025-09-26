@@ -193,11 +193,12 @@ ON b.category_id = c.category_id;
 -- VIEW는 기존에 존재하는지 확인하고, 존재하는 경우에 대해 에러가 안 되도록 설정 가능하다.
 -- CREATE OR REPLACE VIEW
 -- 새로운 VIEW를 생성하거나 기존 VIEW를 대체하기.
-CREATE VIEW category_brand
+CREATE OR REPLACE VIEW category_brand
 AS SELECT b.brand_name, b.brand_description, c.category_name, b.category_id
 FROM BRANDS B
 JOIN categories C
 ON b.category_id = c.category_id;
+
 
 -- 만약 JOIN 형태로 데이터를 조회할 경우
 -- Java에서는 Keyword 변수명으로 사용자가 HTML에 작성한 데이터를 DB에 전달하는 상황.

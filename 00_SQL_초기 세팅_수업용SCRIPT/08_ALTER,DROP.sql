@@ -145,7 +145,7 @@ ALTER TABLE employee MODIFY emp_no VARCHAR(14) NOT NULL;
 -- department 테이블에 mgr_id 컬럼을 INT 타입으로 추가
 ALTER TABLE department ADD mgr_id INT;
 -- department 테이블에 create_date 컬럼을 TIMESTAMP 타입으로 기본값 CURRENT_TIMESTAMP로 추가
-ALTER TABLE department ADD create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE department ADD COLUMN create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 
 
 -- NOT NULL 제약 조건은 ADD를 사용해서 추가할 수 없다.
@@ -159,7 +159,7 @@ ALTER TABLE department ADD create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 -- > 다른 SQL은 COLUMN을 필수로 작성해야 한다.
 
 -- department 테이블에서 create_date 컬럼 삭제하기.
-ALTER TABLE department DROP create_date;
+ALTER TABLE department DROP COLUMN create_date;
 
 -- 특정 컬럼명 변경하기.
 ALTER TABLE department RENAME COLUMN dept_title TO dept_name;
@@ -203,7 +203,13 @@ DROP DATABASE 라인;
 DROP DATABASE 스노우;
 DROP DATABASE employee_management;
 
+### sys 절대 삭제 금지 ###
 
+
+USE TJE;
+SET foreign_key_checks = 0;
+TRUNCATE TABLE brands;
+SELECT * FROM brands;
 
 
 
